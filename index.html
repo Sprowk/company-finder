@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Podnikateľov – Prehľad</title>
+
+  <!-- Fonty -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tvoje globálne štýly -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Knižnice na gzip + CSV -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-inner">
+      <div class="header-title">
+        <h1>Register Podnikateľov</h1>
+      </div>
+      <div id="header-status" class="header-status"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="status-container"></div>
+    <div id="stats-grid" class="stats-grid"></div>
+
+    <div class="table-card" id="table-card" style="display: none;">
+      <div class="table-controls">
+        <div class="control-group">
+          <!-- Posledná aktualizácia (read-only badge) -->
+          <div class="last-updated-wrapper">
+            <div id="last-updated-box" class="date-select" aria-label="Posledná aktualizácia"></div>
+          </div>
+
+          <!-- Kategórie: všetko / firmy / živnosti / ostatné -->
+          <div id="filter-control-container" class="filter-group" style="display: none;">
+            <button class="btn" data-cat="all">Všetko</button>
+            <button class="btn" data-cat="orsr">Firmy</button>
+            <button class="btn" data-cat="zrsr">Živnosti</button>
+            <button class="btn" data-cat="other">Ostatné</button>
+          </div>
+
+          <!-- Filtrovanie podľa mesta a kraja -->
+          <div id="geo-filter-group" class="filter-group" style="display: none;">
+            <input
+              id="city-filter-input"
+              class="date-select"
+              type="text"
+              placeholder="Filtrovať podľa mesta"
+              autocomplete="off"
+            />
+            <div class="select-wrapper">
+              <select id="region-filter-select" class="date-select">
+                <option value="">Všetky kraje</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- download tlačidlo odstránené na želanie -->
+      </div>
+
+      <div class="table-wrapper" id="table-wrapper"></div>
+      <nav class="pagination" id="pagination"></nav>
+    </div>
+  </main>
+
+  <!-- Tvoja logika aplikácie -->
+  <script src="app.js"></script>
+</body>
+</html>
