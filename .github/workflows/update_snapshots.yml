@@ -1,0 +1,48 @@
+name: Weekly snapshots update
+
+on:
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Generate slim snapshots
+        env:
+          RPO_DUMP_URL: ${{ secrets.RPO_DUMP_URL }}
+        run: |
+          python sync_rpo_full.py
+
+      # Always reset branch history to a single commit containing current tree (DANGEROUS).
+      - name: Purge history to single commit (DANGEROUS)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          current_branch=$(git rev-parse --abbrev-ref HEAD)
+          git checkout --orphan temp-clean
+          git add -A
+          git commit -m "chore(data): reset history to single commit"
+          git branch -D "$current_branch"
+          git branch -m "$current_branch"
+          git push --force origin "$current_branch"
+
